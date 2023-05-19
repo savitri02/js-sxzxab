@@ -1,0 +1,8 @@
+{
+  "name": "js-mbo3up",
+  "version": "0.0.0",
+  "private": true,
+  "dependencies": {
+    "mxgraph": "^4.2.2"
+  }
+}
