@@ -26,7 +26,22 @@ function handleCellClick(cell) {
 }
 
 const mg = mxgraph();
+const mxUtils = mg.mxUtils;
 var graph;
+
+// Function to load a remote diagram
+function loadRemoteDiagram(url) {
+  mxUtils.get(url, function (req) {
+    var xml = req.getText(); // Get the XML data of the diagram
+    var doc = mxUtils.parseXml(xml); // Parse the XML data
+    var codec = new mxCodec(doc); // Create a codec to decode the XML data
+    var model = new mxGraphModel(); // Create a new graph model
+    codec.decode(doc.documentElement, model); // Decode the XML and update the model
+    graph.setModel(model); // Set the model to the graph
+  });
+}
+
+// Example usage: loadRemoteDiagram('http://example.com/diagram.xml');
 
 function createNode(name = 'custom', label = 'label') {
   let doc = mg.mxUtils.createXmlDocument();
@@ -59,6 +74,7 @@ const main = (container) => {
     mg.mxUtils.error('nope', 200, false);
   } else {
     graph = new mg.mxGraph(container);
+    graph.setEnabled(false); // disable editing
     graph.convertValueToString = f_convertValueToString;
     let cellLabelChanged = graph.cellLabelChanged;
     const model = graph.getModel();
@@ -83,7 +99,6 @@ const main = (container) => {
         150,
         250,
         80,
-        30,
         'shape=ellipse;fillColor=white;strokeColor=black'
       );
       const v4 = graph.insertVertex(
