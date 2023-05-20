@@ -4,13 +4,34 @@ import mxgraph from 'mxgraph';
 
 var graph;
 
-function outXML(graph) {
+// Function to save the diagram
+function getDiagramXML(graph) {
   // Output the XML representation of the mxGraph model
   const encoder = new mg.mxCodec();
   const node = encoder.encode(graph.getModel());
-  const xml = mg.mxUtils.getXml(node);
-  console.log(xml);
+  const xml = mg.mxUtils.getXml(node);// Get the XML representation of the graph model
+  // You can now do something with the XML data, such as sending it to a server or storing it locally
+  return xml;
 }
+
+// Function to save the diagram as a file
+function saveDiagramLocally(xml) {
+  // Create a Blob object from the XML data
+  var blob = new Blob([xml], { type: 'text/xml' });
+
+  // Create a file download link
+  var downloadLink = document.createElement('a');
+  downloadLink.href = URL.createObjectURL(blob);
+  downloadLink.download = 'diagram.xml'; // Specify the file name
+
+  // Programmatically trigger the download
+  document.body.appendChild(downloadLink);
+  downloadLink.click();
+  document.body.removeChild(downloadLink);
+}
+
+
+
 
 function handleCellClick(cell) {
   cell.setAttribute('val1', 10);
@@ -74,7 +95,7 @@ const main = (container) => {
     mg.mxUtils.error('nope', 200, false);
   } else {
     graph = new mg.mxGraph(container);
-    graph.setEnabled(false); // disable editing
+    graph.setEnabled(true); // disable editing
     graph.convertValueToString = f_convertValueToString;
     let cellLabelChanged = graph.cellLabelChanged;
     const model = graph.getModel();
@@ -92,67 +113,14 @@ const main = (container) => {
     try {
       const v1 = graph.insertVertex(parent, null, 'Hello', 20, 20, 80, 30);
       const v2 = graph.insertVertex(parent, null, 'World', 200, 150, 80, 30);
-      const v3 = graph.insertVertex(
-        parent,
-        null,
-        'Ellipse',
-        150,
-        250,
-        80,
-        'shape=ellipse;fillColor=white;strokeColor=black'
-      );
-      const v4 = graph.insertVertex(
-        parent,
-        null,
-        'Hexagon',
-        280,
-        250,
-        80,
-        30,
-        'shape=hexagon;fillColor=white;strokeColor=black'
-      );
-      const v5 = graph.insertVertex(
-        parent,
-        null,
-        'Cylinder',
-        280,
-        30,
-        80,
-        50,
-        'shape=cylinder;fillColor=white;strokeColor=red'
-      );
-      const v6 = graph.insertVertex(
-        parent,
-        null,
-        'Cloud',
-        280,
-        100,
-        80,
-        50,
-        'shape=cloud;fillColor=white;strokeColor=red'
-      );
-      const v7 = graph.insertVertex(
-        parent,
-        null,
-        'Rhombus',
-        290,
-        160,
-        80,
-        50,
-        'shape=rhombus;fillColor=white;strokeColor=red'
-      );
+      const v3 = graph.insertVertex(parent,null,'Ellipse',150,250,80,'shape=ellipse;fillColor=white;strokeColor=black');
+      const v4 = graph.insertVertex(parent,null,'Hexagon',280,250,80,30,'shape=hexagon;fillColor=white;strokeColor=black');
+      const v5 = graph.insertVertex(parent,null,'Cylinder',280,30,80,50,'shape=cylinder;fillColor=white;strokeColor=red');
+      const v6 = graph.insertVertex(parent,null,'Cloud',280,100,80,50,'shape=cloud;fillColor=white;strokeColor=red');
+      const v7 = graph.insertVertex(parent,null,'Rhombus',290,160,80,50,'shape=rhombus;fillColor=white;strokeColor=red');
       v7.setVisible(true);
       v7.setAttribute('fontColor', 'green');
-      const v8 = graph.insertVertex(
-        parent,
-        null,
-        createNode('dataSource', 'dataSource'),
-        10,
-        150,
-        80,
-        50
-      );
-
+      const v8 = graph.insertVertex(parent,null,createNode('dataSource', 'dataSource'),10,150,80,50);
       const e1 = graph.insertEdge(parent, null, '', v1, v2);
       const e2 = graph.insertEdge(parent, null, '', v2, v3);
       const style = graph.getStylesheet().getDefaultVertexStyle();
@@ -164,7 +132,9 @@ const main = (container) => {
       //v3Style[mg.mxConstants.STYLE_FILLCOLOR] = '#FF0000';
 
       model.setValue(v3, 'Metka');
-      outXML(graph);
+      let xml = getDiagramXML(graph)
+      console.log(xml);
+      saveDiagramLocally(xml)
     } finally {
       model.endUpdate();
     }
