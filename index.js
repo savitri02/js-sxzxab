@@ -53,10 +53,14 @@ var graph;
 // Function to load a remote diagram
 function loadRemoteDiagram(url) {
   mxUtils.get(url, function (req) {
-    var xml = req.getText(); // Get the XML data of the diagram
-    console.log(xml)
+    //var xml = req.getText(); // Get the XML data of the diagram
+    console.log(req)
+    var node = req.getDocumentElement();
+
+
+    console.log('node',node)
     var doc = mxUtils.parseXml(xml); // Parse the XML data
-    console.log(doc)
+   // console.log(doc)
     var codec = new mg.mxCodec(doc); // Create a codec to decode the XML data
     var model = new mg.mxGraphModel(); // Create a new graph model
     codec.decode(doc.documentElement, model); // Decode the XML and update the model
