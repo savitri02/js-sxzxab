@@ -54,12 +54,14 @@ var graph;
 function loadRemoteDiagram(url) {
   mxUtils.get(url, function (req) {
     var xml = req.getText(); // Get the XML data of the diagram
+    console.log(xml)
     var doc = mxUtils.parseXml(xml); // Parse the XML data
-    var codec = new mxCodec(doc); // Create a codec to decode the XML data
-    var model = new mxGraphModel(); // Create a new graph model
+    console.log(doc)
+    var codec = new mg.mxCodec(doc); // Create a codec to decode the XML data
+    var model = new mg.mxGraphModel(); // Create a new graph model
     codec.decode(doc.documentElement, model); // Decode the XML and update the model
-    graph.setModel(model); // Set the model to the graph
-  });
+    graph.model = model; // Set the model to the graph
+  },function (error) { console.log(error)});
 }
 
 // Example usage: loadRemoteDiagram('http://example.com/diagram.xml');
@@ -109,8 +111,16 @@ const main = (container) => {
       }
     });
 
+    document.getElementById("btnSave").onclick = function jsFunc() {
+      saveDiagramLocally(getDiagramXML(graph))
+    }  
+
+    const url = "http://www2.arnes.si/~egrmad/drawio/test_01.xml"
+    loadRemoteDiagram(url)
+
     model.beginUpdate();
     try {
+      /*
       const v1 = graph.insertVertex(parent, null, 'Hello', 20, 20, 80, 30);
       const v2 = graph.insertVertex(parent, null, 'World', 200, 150, 80, 30);
       const v3 = graph.insertVertex(parent,null,'Ellipse',150,250,80,'shape=ellipse;fillColor=white;strokeColor=black');
@@ -134,7 +144,8 @@ const main = (container) => {
       model.setValue(v3, 'Metka');
       let xml = getDiagramXML(graph)
       console.log(xml);
-      saveDiagramLocally(xml)
+//      saveDiagramLocally(xml)
+*/
     } finally {
       model.endUpdate();
     }
